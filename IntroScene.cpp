@@ -79,6 +79,9 @@ SCENE_STATUS IntroScene::HandleEvent(EagleEvent ev) {
    if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
       return status = SCENE_COMPLETE;
    }
+   if (complete) {
+      return status = SCENE_COMPLETE;
+   }
    return status = SCENE_RUNNING;
 }
 
