@@ -4,11 +4,13 @@
 
 #include "Scene.hpp"
 #include "IntroScene.hpp"
+#include "StoryScene.hpp"
 #include "Program.hpp"
 
 
 
 #include "Eagle/GraphicsContext.hpp"
+#include "Eagle/Font.hpp"
 #include "Eagle/backends/Allegro5Backend.hpp"
 
 
@@ -34,8 +36,15 @@ bool Program::Init() {
    win = config.SetupWindow(sys);
    fullscreen = win->Fullscreen();
    scenes[0] = new IntroScene();
+   scenes[1] = new StoryScene();
+   scenes[0]->Init(win);
+   scenes[1]->Init(win);
    active_scene = 0;
-   scenes[active_scene]->Init(win);
+   verdana240 = win->GetFont("Data/Fonts/Verdana.ttf" , 240);
+   verdana120 = win->GetFont("Data/Fonts/Verdana.ttf" , 120);
+   verdana80 = win->GetFont("Data/Fonts/Verdana.ttf" , 80);
+   verdana40 = win->GetFont("Data/Fonts/Verdana.ttf" , 40);
+   verdana20 = win->GetFont("Data/Fonts/Verdana.ttf" , 20);
    return win;
 }
 
@@ -46,7 +55,7 @@ int Program::Run() {
    int ret = 0;
    
    while (!quit) {
-      if (redraw = scenes[active_scene]->Redraw()) {
+      if ((redraw = scenes[active_scene]->Redraw())) {
          win->Clear();
          scenes[active_scene]->Display(win);
          win->FlipDisplay();
@@ -58,14 +67,15 @@ int Program::Run() {
             quit = true;
          }
          if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_ESCAPE) {
-            quit = true;
+//            quit = true;
          }
          if (ev.type == EAGLE_EVENT_TIMER) {
             scenes[active_scene]->Update(ev.timer.eagle_timer_source->SPT());
          }
          ret = scenes[active_scene]->HandleEvent(ev);
          if (ret == SCENE_COMPLETE) {
-            quit = true;
+            if (active_scene + 1 == NUM_SCENES) {quit = true;}
+            active_scene = (active_scene + 1)%NUM_SCENES;
          }
       } while (!sys->UpToDate());
    }

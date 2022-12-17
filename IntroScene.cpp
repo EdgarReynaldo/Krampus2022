@@ -6,6 +6,8 @@
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/Font.hpp"
+#include "Eagle/InputHandler.hpp"
+
 
 
 IntroScene::IntroScene() :
@@ -37,9 +39,6 @@ void IntroScene::Free() {
          }
          samurai_gif[i] = 0;
       }
-      if (splash_font) {
-         window->FreeFont(splash_font);
-      }
    }
    complete = false;
    status = SCENE_NOTREADY;
@@ -52,8 +51,7 @@ bool IntroScene::Init(EagleGraphicsContext* win) {
    window = win;
    EAGLE_ASSERT(win);
    krampus_splash = window->LoadImageFromFile("vista/mountain-vista-with-cliff-face-and-blue-michael-interisano.jpg");
-   splash_font = window->GetFont("Data/Fonts/Verdana.ttf" , -240);
-   bool success = window && window->Valid() && krampus_splash && krampus_splash->Valid() && splash_font && splash_font->Valid();
+   bool success = window && window->Valid() && krampus_splash && krampus_splash->Valid();
    for (unsigned int i = 0 ; i < SAMURAI_NFRAMES ; ++i) {
       char buf[1024] = {0};
       sprintf(buf , "samurai/samurai_frame_%04i.jpg" , i + 1 );
@@ -79,6 +77,9 @@ SCENE_STATUS IntroScene::HandleEvent(EagleEvent ev) {
    if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
       return status = SCENE_COMPLETE;
    }
+   if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+      return status = SCENE_COMPLETE;
+   }
    if (complete) {
       return status = SCENE_COMPLETE;
    }
@@ -97,6 +98,7 @@ SCENE_STATUS IntroScene::Update(double dt) {
 
 
 void IntroScene::Display(EagleGraphicsContext* win) {
+   EagleFont* font = win->GetFont("Data/Fonts/EnglishCn.ttf" , -240);
    double pct = GetAnimationPercent();
    if (pct < 0.5) {
       pct = pct*2.0;
@@ -110,10 +112,10 @@ void IntroScene::Display(EagleGraphicsContext* win) {
       win->DrawImageFit(krampus_splash , Rectangle(0,0,win->Width() , win->Height()) , EagleColor(1.0f,1.0f,1.0f,spct));
 
       
-      win->DrawTextString(splash_font , "Krampus22" , win->Width()/2 , (win->Height())*GetAnimationPercent() , EagleColor(1.0f,1.0f,1.0f,apct) , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawTextString(font , "Krampus22" , win->Width()/2 , (win->Height())*GetAnimationPercent() , EagleColor(1.0f,1.0f,1.0f,apct) , HALIGN_CENTER , VALIGN_CENTER);
 
       
-      win->DrawTextString(splash_font , "Krampus22" , win->Width()/2 , win->Height() - (win->Height())*GetAnimationPercent() , EagleColor(0.0f,0.0f,0.0f,apct) , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawTextString(font , "Krampus22" , win->Width()/2 , win->Height() - (win->Height())*GetAnimationPercent() , EagleColor(0.0f,0.0f,0.0f,apct) , HALIGN_CENTER , VALIGN_CENTER);
 
       if (frame >= 0) {
          win->DrawImageCenter(samurai_gif[frame] , Rectangle(0,0,win->Width() , win->Height()));
@@ -124,8 +126,8 @@ void IntroScene::Display(EagleGraphicsContext* win) {
       
       win->DrawImageCenter(samurai_gif[(int)SAMURAI_NFRAMES - 1] , Rectangle(0,0,win->Width(),win->Height()));
       
-      win->DrawTextString(splash_font , "Krampus22" , win->Width()/2 + 5 , win->Height()/4 + 5 , EagleColor(0,0,0) , HALIGN_CENTER , VALIGN_CENTER);
-      win->DrawTextString(splash_font , "Krampus22" , win->Width()/2  , win->Height()/4 - 5 , EagleColor(255,0,0) , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawTextString(font , "Krampus22" , win->Width()/2 + 5 , win->Height()/4 + 5 , EagleColor(0,0,0) , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawTextString(font , "Krampus22" , win->Width()/2  , win->Height()/4 - 5 , EagleColor(255,0,0) , HALIGN_CENTER , VALIGN_CENTER);
       
    }
    else if (pct <= 1.0) {
@@ -136,8 +138,8 @@ void IntroScene::Display(EagleGraphicsContext* win) {
       }
       frame = ((int)SAMURAI_NFRAMES - 1) - frame;
       win->DrawImageCenter(samurai_gif[frame] , Rectangle(0,0,win->Width(),win->Height()) , EagleColor(1.0f , 1.0f - pct , 1.0f - pct , 1.0f - pct));
-      win->DrawTextString(splash_font , "Krampus22" , win->Width()/2 + 5 , win->Height()/4 + 5 , EagleColor(255,0,0) , HALIGN_CENTER , VALIGN_CENTER);
-      win->DrawTextString(splash_font , "Krampus22" , win->Width()/2  , win->Height()/4 - 5 , EagleColor(0,0,0) , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawTextString(font , "Krampus22" , win->Width()/2 + 5 , win->Height()/4 + 5 , EagleColor(255,0,0) , HALIGN_CENTER , VALIGN_CENTER);
+      win->DrawTextString(font , "Krampus22" , win->Width()/2  , win->Height()/4 - 5 , EagleColor(0,0,0) , HALIGN_CENTER , VALIGN_CENTER);
    }
    else {
       complete = true;

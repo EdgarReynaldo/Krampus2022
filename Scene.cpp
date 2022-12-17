@@ -36,3 +36,11 @@ bool Scene::Complete() {
 SCENE_STATUS Scene::Status() {
    return status;
 }
+
+
+
+void Scene::Reset() {
+   complete = false;
+   AnimationBase::ResetAnimation();
+}
+

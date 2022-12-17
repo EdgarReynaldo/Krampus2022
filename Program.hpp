@@ -18,6 +18,7 @@ void AllegroLogHandler(const char* text);
 
 class Allegro5System;
 class EagleGraphicsContext;
+class EagleFont;
 
 class Program {
    
@@ -33,6 +34,11 @@ class Program {
    bool redraw;
    bool quit;
 
+   EagleFont* verdana240;
+   EagleFont* verdana120;
+   EagleFont* verdana80;
+   EagleFont* verdana40;
+   EagleFont* verdana20;
 public :
    
    Program();

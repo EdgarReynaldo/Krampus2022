@@ -20,7 +20,7 @@ enum SCENE_STATUS {
 };
 
 
-#define NUM_SCENES 1
+#define NUM_SCENES 2
 
 class Scene : public AnimationBase {
 
@@ -48,7 +48,7 @@ public :
    bool Complete();
    SCENE_STATUS Status();
 
-   virtual void Reset()=0;
+   virtual void Reset();
 
 };
 
