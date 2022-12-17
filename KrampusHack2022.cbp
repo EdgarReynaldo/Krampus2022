@@ -147,7 +147,6 @@
 		<Unit filename="IntroScene.cpp" />
 		<Unit filename="IntroScene.hpp" />
 		<Unit filename="KH22Main.cpp" />
-		<Unit filename="Krampus22.cpp" />
 		<Unit filename="Krampus22.hpp" />
 		<Unit filename="LICENSE" />
 		<Unit filename="Program.cpp" />
@@ -155,6 +154,8 @@
 		<Unit filename="README.md" />
 		<Unit filename="Scene.cpp" />
 		<Unit filename="Scene.hpp" />
+		<Unit filename="StoryScene.cpp" />
+		<Unit filename="StoryScene.hpp" />
 		<Unit filename="WishList.txt" />
 		<Extensions />
 	</Project>
