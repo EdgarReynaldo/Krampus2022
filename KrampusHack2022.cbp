@@ -143,20 +143,40 @@
 		<Linker>
 			<Add directory="E:/usr64/lib" />
 		</Linker>
+		<Unit filename="Animation.cpp" />
+		<Unit filename="Animation.hpp" />
+		<Unit filename="Cats.cpp" />
+		<Unit filename="Cats.hpp" />
 		<Unit filename="Credits.txt" />
+		<Unit filename="Data/Images/Rooms/Rooms.cfg" />
+		<Unit filename="GameScene.cpp" />
+		<Unit filename="GameScene.hpp" />
+		<Unit filename="GlobalAnimations.cpp" />
+		<Unit filename="GlobalAnimations.hpp" />
 		<Unit filename="IntroScene.cpp" />
 		<Unit filename="IntroScene.hpp" />
 		<Unit filename="KH22Main.cpp" />
 		<Unit filename="Krampus22.hpp" />
 		<Unit filename="LICENSE" />
+		<Unit filename="LICENSE.txt" />
+		<Unit filename="Ninja.cpp" />
+		<Unit filename="Ninja.hpp" />
+		<Unit filename="Objects.cpp" />
+		<Unit filename="Objects.hpp" />
+		<Unit filename="Physics.cpp" />
+		<Unit filename="Physics.hpp" />
 		<Unit filename="Program.cpp" />
 		<Unit filename="Program.hpp" />
 		<Unit filename="README.md" />
+		<Unit filename="Rooms.cpp" />
+		<Unit filename="Rooms.hpp" />
 		<Unit filename="Scene.cpp" />
 		<Unit filename="Scene.hpp" />
 		<Unit filename="StoryScene.cpp" />
 		<Unit filename="StoryScene.hpp" />
 		<Unit filename="WishList.txt" />
+		<Unit filename="World.cpp" />
+		<Unit filename="World.hpp" />
 		<Extensions />
 	</Project>
 </CodeBlocks_project_file>
