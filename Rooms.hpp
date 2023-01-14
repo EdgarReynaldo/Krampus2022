@@ -33,6 +33,7 @@ public :
    void FreeRoom();
    bool BuildRoom(EagleGraphicsContext* window , int world_num , int room_num);
 
+   void Draw(EagleGraphicsContext* win);
 };
 
 

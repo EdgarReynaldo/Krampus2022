@@ -60,16 +60,24 @@ bool Room::BuildRoom(EagleGraphicsContext* window , int world_num , int room_num
    ConfigFile roomcfg;
    success = success && roomcfg.LoadFromFile("Data/Images/Rooms/Rooms.cfg");
    
-   std::string world = StringPrintF("World%d" , world_num);
+   std::string world = StringPrintF("WORLD%d" , world_num);
    std::string room = StringPrintF("Room%d" , room_num);
    std::string bg = roomcfg[world][room];
    
    room_bg = win->LoadImageFromFile(bg , VIDEO_IMAGE);
    room_bg_memory = win->LoadImageFromFile(bg , MEMORY_IMAGE);
 
+   area.SetArea(0 , win->Height() - room_bg->H() , room_bg->W() , room_bg->H());
+   
    success = success && (room_bg && room_bg->Valid());
    success = success && (room_bg_memory && room_bg_memory->Valid());
    return success;
+}
+
+
+
+void Room::Draw(EagleGraphicsContext* win) {
+   win->Draw(room_bg , area.X() , area.Y());
 }
 
 

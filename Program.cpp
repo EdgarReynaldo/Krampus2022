@@ -6,7 +6,7 @@
 #include "IntroScene.hpp"
 #include "StoryScene.hpp"
 #include "Program.hpp"
-
+#include "GameScene.hpp"
 
 
 #include "Eagle/GraphicsContext.hpp"
@@ -33,19 +33,22 @@ Program::Program() :
 bool Program::Init() {
    sys = GetAllegro5System();
    config.Setup("Eagle.cfg");
-   win = config.SetupWindow(sys);
+   bool success = (win = config.SetupWindow(sys));
+   success = success && win->Valid();
    fullscreen = win->Fullscreen();
    scenes[0] = new IntroScene();
    scenes[1] = new StoryScene();
-   scenes[0]->Init(win);
-   scenes[1]->Init(win);
-   active_scene = 0;
-   verdana240 = win->GetFont("Data/Fonts/Verdana.ttf" , 240);
-   verdana120 = win->GetFont("Data/Fonts/Verdana.ttf" , 120);
-   verdana80 = win->GetFont("Data/Fonts/Verdana.ttf" , 80);
-   verdana40 = win->GetFont("Data/Fonts/Verdana.ttf" , 40);
-   verdana20 = win->GetFont("Data/Fonts/Verdana.ttf" , 20);
-   return win;
+   scenes[2] = new Game();
+   success = success && scenes[0]->Init(win);
+   success = success && scenes[1]->Init(win);
+   success = success && scenes[2]->Init(win);
+   active_scene = 2;
+   success = success && (verdana240 = win->GetFont("Data/Fonts/Verdana.ttf" , 240));
+   success = success && (verdana120 = win->GetFont("Data/Fonts/Verdana.ttf" , 120));
+   success = success && (verdana80 = win->GetFont("Data/Fonts/Verdana.ttf" , 80));
+   success = success && (verdana40 = win->GetFont("Data/Fonts/Verdana.ttf" , 40));
+   success = success && (verdana20 = win->GetFont("Data/Fonts/Verdana.ttf" , 20));
+   return success;
 }
 
 

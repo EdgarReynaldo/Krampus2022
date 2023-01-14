@@ -8,7 +8,7 @@
 
 EagleColor GetColorByEnum(COLOR c) {
    const EagleColor carray[NUMCOLORS] = {
-      EagleColor(255,255,255,127),
+      EagleColor(127,127,127,255),
       EagleColor(255,255,255,255),
       EagleColor(255,  0,  0,255),
       EagleColor(255,127,  0,255),

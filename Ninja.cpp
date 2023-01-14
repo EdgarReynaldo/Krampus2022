@@ -8,6 +8,7 @@
 
 #include "Eagle/Events.hpp"
 #include "Eagle/InputHandler.hpp"
+#include "Eagle/Image.hpp"
 
 
 
@@ -62,18 +63,18 @@ void Shuriken::Draw(EagleGraphicsContext* win) {
 
 
 Ninja::Ninja() :
-      Object(Physics() , NONE),
+      Object(Physics() , GRAY),
       player(false),
-      nshuriken(-1),
-      lives(-1),
-      lives_left(-1),
-      health(-1),
       faceleft(false),
-      shuriken_animation()
-      
-{
-   shuriken_animation.Init(3 , 1 , 0.25 , ANIMATION_REPEAT_FORWARDS);
-}
+      midair(false),
+      health(-1),
+      lives_left(-1),
+      catlives(GRAY),
+      nshuriken(-1),
+      shuriken(),
+      current_animation(),
+      astate("Stand")
+{}
 
 
 
@@ -93,15 +94,19 @@ void Ninja::Update(double dt) {
       (*it).Update(dt);
    }
    phys = phys.FuturePhysics(dt);
+   current_animation.AdvanceAnimationTime(dt);
 }
 
 
 
 void Ninja::Draw(EagleGraphicsContext* win) {
-   BitmapAnimation* anime = dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation("Stand"));
+   BitmapAnimation* anime = dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation(astate));
    int flag = faceleft?DRAW_HFLIP:DRAW_NORMAL;
    EagleColor c = GetEagleColor();
-   win->Draw(anime->GetFrame(0) , phys.x , phys.y , HALIGN_CENTER , VALIGN_CENTER , c , flag);
+   win->Draw(anime->GetFrame(current_animation.GetFrameNum()) , phys.x , phys.y , HALIGN_CENTER , VALIGN_CENTER , c , flag);
+   for (std::deque<Shuriken>::iterator it = shuriken.begin() ; it != shuriken.end() ; ++it) {
+      it->Draw(win);
+   }
 }
 
 
@@ -115,6 +120,31 @@ void Ninja::LaunchShuriken() {
       p.vx = faceleft?-ShurikenSpeed(this->color):ShurikenSpeed(this->color);
       shuriken.push_front(Shuriken(p , this->color));
    }
+}
+
+
+
+void Ninja::SetAnimationState(std::string state , int frame_num) {
+   astate = state;
+   current_animation = *(pganime->GetNinjaAnimation(astate));
+   current_animation.SetAnimationTime(0.0);
+   while (frame_num > 0) {
+      current_animation.AdvanceFrame();
+      --frame_num;
+   }
+}
+
+
+
+int Ninja::GetAnimationFrameNum() {
+   return current_animation.GetFrameNum();
+}
+
+
+
+EagleImage* Ninja::GetAnimationFrame() {
+   BitmapAnimation* nanime = dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation(astate));
+   return nanime->GetFrame(GetAnimationFrameNum());
 }
 
 

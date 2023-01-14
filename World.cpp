@@ -66,7 +66,7 @@ SCENE_STATUS World::Update(double dt) {
 
 
 void World::Display(EagleGraphicsContext* win) {
-   (void)win;
+   current_room.Draw(win);
 }
 
 

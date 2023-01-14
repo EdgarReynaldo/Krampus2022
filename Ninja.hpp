@@ -11,7 +11,6 @@
 #include "Objects.hpp"
 
 
-
 class Shuriken : public AnimationBase , public Object {
 public :
    Shuriken(Physics p , COLOR c);
@@ -24,26 +23,32 @@ public :
 double ShurikenSpeed(COLOR c);
 
 
+class EagleImage;
+
 class Ninja : public Object {
+   
+   friend class Game;
+   
 protected :
    bool player;/// Player ninja or enemy ninja
+   bool faceleft;
+   bool midair;
+
+   int health;/// -1 undead 0 to 999
+   int lives_left;/// -1 undead 0-9
+   int catlives;/// cat color bit field of flags
 
    int nshuriken;/// -1 means infinite, else num
 
-   int lives;/// -1 undead 0-9
-   int lives_left;
-   
-   int health;/// -1 undead 0 to 999
-
-   bool faceleft;
-
-   AnimationBase shuriken_animation;
-   
-      
    std::deque<Shuriken> shuriken;
+
+   AnimationBase current_animation;
+   std::string astate;/// Animation state
+      
 public :
    
    Ninja();
+         
    virtual ~Ninja();
    
    
@@ -52,6 +57,9 @@ public :
    virtual void Draw(EagleGraphicsContext* win) override;
 
    void LaunchShuriken();
+   void SetAnimationState(std::string state , int frame_num = 0);
+   int GetAnimationFrameNum();
+   EagleImage* GetAnimationFrame();
 };
 
 
@@ -80,8 +88,6 @@ extern EnemyNinja* penemy;
 
 
 #endif // Ninja_HPP
-
-
 
 
 

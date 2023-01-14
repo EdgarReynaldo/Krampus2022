@@ -11,7 +11,7 @@
 */
 
 enum COLOR {
-   NONE     = 0,
+   GRAY     = 0,
    WHITE    = 1,
    RED      = 2,
    ORANGE   = 4,

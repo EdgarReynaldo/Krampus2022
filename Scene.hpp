@@ -20,7 +20,7 @@ enum SCENE_STATUS {
 };
 
 
-#define NUM_SCENES 2
+#define NUM_SCENES 3
 
 class Scene : public AnimationBase {
 

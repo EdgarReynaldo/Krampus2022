@@ -27,9 +27,6 @@ class Game : public Scene {
    EnemyNinja eninja;
    Cat cat;
 
-   std::string pstate;/// stab/crouch/etc
-   std::string estate;/// same
-   std::string cstate;/// Walking/jumping
 
    GlobalAnimations anime;
 

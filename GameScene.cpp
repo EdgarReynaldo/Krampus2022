@@ -16,11 +16,10 @@ Game::Game() :
       pninja(),
       eninja(),
       cat(),
-      pstate("Stand"),
-      estate("Stand"),
-      cstate("Stand"),
       anime()
-{}
+{
+   
+}
 
 
 
@@ -45,6 +44,7 @@ bool Game::Init(EagleGraphicsContext* win) {
    Free();
    bool success = true;
    world = new World();
+   success = success && world->Init(win);
    pganime = &anime;
    pplayer = &pninja;
    penemy = &eninja;
@@ -56,19 +56,37 @@ bool Game::Init(EagleGraphicsContext* win) {
 
 
 SCENE_STATUS Game::HandleEvent(EagleEvent ev) {
-   return world->HandleEvent(ev);
+
+   if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
+      return SCENE_COMPLETE;
+   }
+
+   world->HandleEvent(ev);
+   pninja.HandleEvent(ev);
+   eninja.HandleEvent(ev);
+   cat.HandleEvent(ev);
+   
+   return SCENE_RUNNING;
 }
 
 
 
 SCENE_STATUS Game::Update(double dt) {
-   return world->Update(dt);
+   world->Update(dt);
+   pninja.Update(dt);
+   eninja.Update(dt);
+   cat.Update(dt);
+   return SCENE_RUNNING;
 }
 
 
 
 void Game::Display(EagleGraphicsContext* win) {
    world->Display(win);
+   
+   win->Draw(pninja.GetAnimationFrame() , pninja.phys.x , pninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , pninja.GetEagleColor() , pninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
+   win->Draw(eninja.GetAnimationFrame() , eninja.phys.x , eninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , eninja.GetEagleColor() , eninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
+   
 }
 
 

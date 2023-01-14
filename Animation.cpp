@@ -32,6 +32,7 @@ void BitmapAnimation::Free() {
 bool BitmapAnimation::Load(EagleGraphicsContext* window , std::string basename , std::string ext , int nframes) {
    Free();
    win = window;
+   frames.resize(nframes , 0);
    bool success = true;
    std::string path; 
    for (int i = 0 ; i  < nframes ; ++i) {

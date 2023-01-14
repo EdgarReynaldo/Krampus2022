@@ -8,7 +8,7 @@
 
 
 Cat::Cat() :
-      Object(Physics() , NONE),
+      Object(Physics() , GRAY),
       found_ramen(false)
 {}
 
