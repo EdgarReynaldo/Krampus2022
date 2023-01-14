@@ -1,0 +1,11 @@
+Evening!
+
+I love writing code, it's probably one of my favorite things to do. I love software architecture, design patterns, discussions on programming theory and principals. And, as such, I find myself wanting to write every system that comes up - Animation systems, build systems, optimized tile map meshes - but the hard reality is there isn't enough time to do everything, so I find myself having to apply constraints to really focus my work on what matters most.
+
+My KrampusHack wishlist is:
+
+- Use Some Constraints: Intentionally and actively apply some constraint in your game to makes it easier for you to make more game content, more effectively. For example, all rooms are exactly 16x18 tiles, or, there are only 4 types of enemies, or, all sprites are only 4 shades of color. The constraint should be something that simplifies possibility space of your work, keeping it focused so that production output is higher. It can be anything.
+
+- Pick a Theme/Genre That I'm Into: Themes that always work for me are 1) cats, 2) Japanese ramen, 3) dystopian sci-fi. Genres I like are visual novels, simplified 3d games (2d gameplay with a 3d view), top-down zelda style, or platform game would be cool. Something 8-bit nintendo-y is fun. Collecting things and getting achievements is fun. HD display is cool. I'm not a big fan of puzzle games. Also not a fan of dungeon crawlers or games that require a lot of clicking and/or micro-managing with a UI. Pick or discard any of these, please. :)
+
+Thank you! I hope you have fun! :)
