@@ -6,6 +6,8 @@
 
 #include "World.hpp"
 
+#include "Eagle/InputHandler.hpp"
+
 
 
 Game::Game() :
@@ -16,9 +18,10 @@ Game::Game() :
       pninja(),
       eninja(),
       cat(),
-      anime()
+      anime(),
+      rng()
 {
-   
+   rng.Seed(0);
 }
 
 
@@ -43,13 +46,15 @@ void Game::Free() {
 bool Game::Init(EagleGraphicsContext* win) {
    Free();
    bool success = true;
-   world = new World();
-   success = success && world->Init(win);
+
    pganime = &anime;
    pplayer = &pninja;
    penemy = &eninja;
+
    success = success && anime.LoadGlobalAnimations(win);
-   success = success && world->SetWorldAndRoom(0 , 0);
+
+   world = new World();
+   success = success && world->Init(win);
    return success;
 }
 
@@ -60,7 +65,10 @@ SCENE_STATUS Game::HandleEvent(EagleEvent ev) {
    if (ev.type == EAGLE_EVENT_DISPLAY_CLOSE) {
       return SCENE_COMPLETE;
    }
-
+   if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_ESCAPE) {
+      return SCENE_COMPLETE;
+   }
+   
    world->HandleEvent(ev);
    pninja.HandleEvent(ev);
    eninja.HandleEvent(ev);
@@ -84,8 +92,12 @@ SCENE_STATUS Game::Update(double dt) {
 void Game::Display(EagleGraphicsContext* win) {
    world->Display(win);
    
-   win->Draw(pninja.GetAnimationFrame() , pninja.phys.x , pninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , pninja.GetEagleColor() , pninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
-   win->Draw(eninja.GetAnimationFrame() , eninja.phys.x , eninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , eninja.GetEagleColor() , eninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
+   pninja.Draw(win);
+   eninja.Draw(win);
+   
+   
+//   win->Draw(pninja.GetAnimationFrame() , pninja.phys.x , pninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , pninja.GetEagleColor() , pninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
+//   win->Draw(eninja.GetAnimationFrame() , eninja.phys.x , eninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , eninja.GetEagleColor() , eninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
    
 }
 

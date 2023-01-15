@@ -143,6 +143,8 @@
 		<Linker>
 			<Add directory="E:/usr64/lib" />
 		</Linker>
+		<Unit filename="Abilities.cpp" />
+		<Unit filename="Abilities.hpp" />
 		<Unit filename="Animation.cpp" />
 		<Unit filename="Animation.hpp" />
 		<Unit filename="Cats.cpp" />

@@ -13,6 +13,7 @@
 
 #include <string>
 
+#include "Eagle/Random.hpp"
 
 
 class World;
@@ -30,6 +31,8 @@ class Game : public Scene {
 
    GlobalAnimations anime;
 
+   MTRNG rng;
+   
 public :
    
    Game();

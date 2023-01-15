@@ -63,6 +63,10 @@ public :
 };
 
 
+double NinjaSpeed(COLOR c);
+
+
+
 class PlayerNinja : public Ninja {
 public :
    virtual void HandleEvent(EagleEvent e) override;

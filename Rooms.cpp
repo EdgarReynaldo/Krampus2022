@@ -3,6 +3,8 @@
 
 
 #include "Rooms.hpp"
+#include "Ninja.hpp"
+#include "GlobalAnimations.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/GraphicsContext.hpp"
 #include "Eagle/ConfigFile.hpp"
@@ -71,6 +73,12 @@ bool Room::BuildRoom(EagleGraphicsContext* window , int world_num , int room_num
    
    success = success && (room_bg && room_bg->Valid());
    success = success && (room_bg_memory && room_bg_memory->Valid());
+   
+   pplayer->phys.y = room_bg->H() - dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation("Stand"))->GetFrame(0)->H()/2;
+   penemy->phys.y = pplayer->phys.y;
+   penemy->phys.x = room_bg->W();
+   
+   
    return success;
 }
 

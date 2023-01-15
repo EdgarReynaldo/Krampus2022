@@ -25,6 +25,15 @@ double ShurikenSpeed(COLOR c) {
 
 
 
+double NinjaSpeed(COLOR c) {
+   const double speeds[NUMCOLORS] = {
+      240.0,180.0,240.0,300.0,360.0,420.0,480.0,540.0,600.0,720.0
+   };
+   return speeds[c];
+}
+
+
+
 /// ----------------     Shuriken      -------------------
 
 
@@ -45,6 +54,7 @@ void Shuriken::HandleEvent(EagleEvent e) {
 
 void Shuriken::Update(double dt) {
    this->phys = this->phys.FuturePhysics(dt);
+   AdvanceAnimationTime(dt);
 }
 
 
@@ -53,7 +63,7 @@ void Shuriken::Draw(EagleGraphicsContext* win) {
    EAGLE_ASSERT(pganime);
    BitmapAnimation* ban = dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation("Shuriken"));
    int flag = (phys.vx < 0)?DRAW_HFLIP:DRAW_NORMAL;
-   win->Draw(ban->GetFrame(GetFrameNum()) , phys.x , phys.y , HALIGN_CENTER , VALIGN_CENTER , pplayer->GetEagleColor() , flag);
+   win->Draw(ban->GetFrame(GetFrameNum()) , phys.x , phys.y , HALIGN_CENTER , VALIGN_CENTER , ecol , flag);
 }
 
 
@@ -115,10 +125,13 @@ void Ninja::LaunchShuriken() {
    if (nshuriken != 0) {
       if (nshuriken > 0) {--nshuriken;}
       Physics p;
-      p.x = this->phys.x;
-      p.y = this->phys.y;
-      p.vx = faceleft?-ShurikenSpeed(this->color):ShurikenSpeed(this->color);
-      shuriken.push_front(Shuriken(p , this->color));
+      p.x = phys.x;
+      p.y = phys.y;
+      p.vx = (phys.vx>0)?(ShurikenSpeed(color) + phys.vx):((phys.vx < 0)?(-ShurikenSpeed(color) + phys.vx):0);
+      p.vy = (phys.vy>0)?(ShurikenSpeed(color) + phys.vy):((phys.vy < 0)?(ShurikenSpeed(color) + phys.vy):0);
+      if (fabs(p.vx) > 0 || fabs(p.vy) > 0) {
+         shuriken.push_front(Shuriken(p , color));
+      }
    }
 }
 
@@ -155,8 +168,32 @@ EagleImage* Ninja::GetAnimationFrame() {
 
 void PlayerNinja::HandleEvent(EagleEvent e) {
    if (e.type == EAGLE_EVENT_KEY_DOWN) {
-      if (e.keyboard.keycode == EAGLE_KEY_SPACE) {
+      if (e.keyboard.keycode == EAGLE_KEY_S) {
          LaunchShuriken();
+      }
+   }
+   if (e.type == EAGLE_EVENT_TIMER) {
+      
+      if (keydown[EAGLE_KEY_LEFT]) {
+         faceleft = true;
+         phys.vx = -NinjaSpeed(color);
+      }
+      else if (keydown[EAGLE_KEY_RIGHT]) {
+         faceleft = false;
+         phys.vx = NinjaSpeed(color);;
+      }
+      else {
+         phys.vx = 0.0;
+      }
+
+      if (keydown[EAGLE_KEY_UP]) {
+         phys.vy = -NinjaSpeed(color);
+      }
+      else if (keydown[EAGLE_KEY_DOWN]) {
+         phys.vy = NinjaSpeed(color);
+      }
+      else {
+         phys.vy = 0.0;
       }
    }
 }
@@ -176,6 +213,50 @@ void PlayerNinja::Update(double dt) {
 
 void EnemyNinja::HandleEvent(EagleEvent e) {
    (void)e;
+   
+   if (e.type == EAGLE_EVENT_TIMER) {
+      Physics p1 = phys;
+      Physics p2 = pplayer->phys;
+      double dx = p2.x - p1.x;
+      double dy = p2.y - p1.y;
+
+      double dsq = dx*dx + dy*dy;
+      if (dsq >= 160000) {
+
+
+         /// Head randomly towards the player in a blind linear fashion
+         double arad = atan2(dy,dx);
+         int octant = (int)((arad/(2.0*M_PI))*8 + 8)%8;
+         bool left = octant > 2 && octant < 6;
+         bool up = octant >= 1 && octant <= 3;
+         bool down = octant >= 5 && octant <= 7;
+         bool right = octant < 2 || octant > 6;
+         
+         if (left) {
+            phys.vx = -NinjaSpeed(color);
+         }
+         else if (right) {
+            phys.vx = NinjaSpeed(color);
+         }
+         else {
+            phys.vx = 0;
+         }
+         if (up) {
+            phys.vy = NinjaSpeed(color);
+         }
+         else if (down) {
+            phys.vy = -NinjaSpeed(color);
+         }
+         else {
+            phys.vy = 0;
+         }
+      }
+      else {
+         phys.vx = 0;
+         phys.vy = 0;
+      }
+   }
+   
 }
 
 
