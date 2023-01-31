@@ -9,6 +9,7 @@
 #include "Scene.hpp"
 #include "Ninja.hpp"
 #include "Cats.hpp"
+#include "Ramen.hpp"
 #include "GlobalAnimations.hpp"
 
 #include <string>
@@ -27,7 +28,7 @@ class Game : public Scene {
    PlayerNinja pninja;
    EnemyNinja eninja;
    Cat cat;
-
+   Ramen ramen;
 
    GlobalAnimations anime;
 

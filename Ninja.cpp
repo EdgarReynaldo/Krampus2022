@@ -3,12 +3,15 @@
 
 
 #include "Ninja.hpp"
+#include "Randomizer.hpp"
 #include "GlobalAnimations.hpp"
 
 
 #include "Eagle/Events.hpp"
 #include "Eagle/InputHandler.hpp"
 #include "Eagle/Image.hpp"
+#include "Eagle/Random.hpp"
+#include "MathStuff.hpp"
 
 
 
@@ -31,6 +34,10 @@ double NinjaSpeed(COLOR c) {
    };
    return speeds[c];
 }
+
+
+
+
 
 
 
@@ -213,7 +220,7 @@ void PlayerNinja::Update(double dt) {
 
 void EnemyNinja::HandleEvent(EagleEvent e) {
    (void)e;
-   
+   bool launch_shuriken = false;
    if (e.type == EAGLE_EVENT_TIMER) {
       Physics p1 = phys;
       Physics p2 = pplayer->phys;
@@ -221,12 +228,17 @@ void EnemyNinja::HandleEvent(EagleEvent e) {
       double dy = p2.y - p1.y;
 
       double dsq = dx*dx + dy*dy;
-      if (dsq >= 160000) {
-
-
+      double arad = 0;
+      if (dsq < 140000 || dsq >= 200000) {
+         if (dsq < 140000) {
+            arad = atan2(-dy,-dx);/// Go away
+         }
+         else if (dsq >= 200000) {
+            arad = atan2(dy,dx);/// Go towards
+            launch_shuriken = (prng->Rand0toNM1(100) >= 98);
+         }
          /// Head randomly towards the player in a blind linear fashion
-         double arad = atan2(dy,dx);
-         int octant = (int)((arad/(2.0*M_PI))*8 + 8)%8;
+         int octant = RadTo8Way(arad);
          bool left = octant > 2 && octant < 6;
          bool up = octant >= 1 && octant <= 3;
          bool down = octant >= 5 && octant <= 7;
@@ -234,9 +246,11 @@ void EnemyNinja::HandleEvent(EagleEvent e) {
          
          if (left) {
             phys.vx = -NinjaSpeed(color);
+            faceleft = true;
          }
          else if (right) {
             phys.vx = NinjaSpeed(color);
+            faceleft = false;
          }
          else {
             phys.vx = 0;
@@ -254,6 +268,9 @@ void EnemyNinja::HandleEvent(EagleEvent e) {
       else {
          phys.vx = 0;
          phys.vy = 0;
+      }
+      if (launch_shuriken) {
+         LaunchShuriken();
       }
    }
    

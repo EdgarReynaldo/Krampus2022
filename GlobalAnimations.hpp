@@ -8,7 +8,7 @@
 
 #include "Animation.hpp"
 
-/**
+
 class SpriteSheetAnimation : public AnimationBase {
 
    EagleGraphicsContext* window;
@@ -24,15 +24,15 @@ public :
 
    
    
-   void Update(double dt)
-   EagleImage* CurrentFrame();
+   void Update(double dt);
+   EagleImage* GetFrame(int fnum);
 
-   bool SetupSpriteSheet(EagleImage* spritesheet , std::string spritename);
+   bool SetupSpriteSheet(EagleGraphicsContext* win , EagleImage* spritesheet , std::string spritename);
 
 
 
 };
-*/
+
 
 
 
@@ -57,7 +57,7 @@ public :
    BitmapAnimation nslash;
    BitmapAnimation nspin;
    BitmapAnimation nrun;
-/**
+
    EagleImage* cat_walking;
    EagleImage* cat_jumping;
 
@@ -66,7 +66,6 @@ public :
 
 
    ANIMATIONMAP catmap;
-*/
    ANIMATIONMAP ninjamap;
 
    bool LoadGlobalAnimations(EagleGraphicsContext* win);
@@ -79,7 +78,8 @@ public :
 
    void Free();
 
-   AnimationBase* GetNinjaAnimation(std::string nstate);
+   BitmapAnimation* GetNinjaAnimation(std::string nstate);
+   SpriteSheetAnimation* GetCatAnimation(std::string cstate);
 
    friend class Game;
 };

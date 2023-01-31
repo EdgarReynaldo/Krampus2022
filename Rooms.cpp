@@ -4,6 +4,8 @@
 
 #include "Rooms.hpp"
 #include "Ninja.hpp"
+#include "Cats.hpp"
+#include "Ramen.hpp"
 #include "GlobalAnimations.hpp"
 #include "Eagle/Image.hpp"
 #include "Eagle/GraphicsContext.hpp"
@@ -58,7 +60,7 @@ bool Room::BuildRoom(EagleGraphicsContext* window , int world_num , int room_num
    }
    win = window;
 
-   const int ROOMNUM = (world_num == 0)?-1:(10*(world_num-1) + room_num);
+///   const int ROOMNUM = (world_num == 0)?-1:(10*(world_num-1) + room_num);
    ConfigFile roomcfg;
    success = success && roomcfg.LoadFromFile("Data/Images/Rooms/Rooms.cfg");
    
@@ -77,7 +79,14 @@ bool Room::BuildRoom(EagleGraphicsContext* window , int world_num , int room_num
    pplayer->phys.y = room_bg->H() - dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation("Stand"))->GetFrame(0)->H()/2;
    penemy->phys.y = pplayer->phys.y;
    penemy->phys.x = room_bg->W();
+   pcat->phys.x = room_bg->W()/2;
+   pcat->phys.y = 0;
+   pramen->phys.x = room_bg->W()/2;
+   pramen->phys.y = room_bg->H() - pramen->RamenPic()->H()/2;
    
+   
+   CollisionMap cmap;
+   success = success && cmap.Init(win , room_bg_memory);
    
    return success;
 }

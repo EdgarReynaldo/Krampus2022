@@ -10,8 +10,8 @@
 GlobalAnimations* pganime = 0;
 
 
-/**
-SpriteSheetAnimation() :
+
+SpriteSheetAnimation::SpriteSheetAnimation() :
       AnimationBase(),
       window(0),
       sheet(0),
@@ -45,10 +45,44 @@ void SpriteSheetAnimation::Update(double dt) {
 
 
 
-EagleImage* SpriteSheetAnimation::CurrentFrame() {
-   return subsheet[frame_num];
+EagleImage* SpriteSheetAnimation::GetFrame(int fnum) {
+   return subsheet[fnum];
 }
-*/
+
+
+
+bool SpriteSheetAnimation::SetupSpriteSheet(EagleGraphicsContext* win , EagleImage* spritesheet , std::string spritename) {
+   Free();
+   EAGLE_ASSERT(win);
+   EAGLE_ASSERT(spritesheet && spritesheet->Valid());
+   if (!win || !spritesheet || (spritesheet && !spritesheet->Valid())) {return false;}
+   window = win;
+   sheet = spritesheet;
+   if (spritename.compare("CatWalk") == 0) {
+      subsheet.resize(8 , 0);
+      for (unsigned int f = 0 ; f < 8 ; ++f) {
+         int row = f/2;
+         int col = f%2;
+         int y = row*(sheet->H()/4);
+         int x = col*(sheet->W()/2);
+         subsheet[f] = window->CreateSubImage(sheet , x , y , sheet->W()/2 , sheet->H()/4);
+      }
+      return true;
+   }
+   else if (spritename.compare("CatJump") == 0) {
+      subsheet.resize(10 , 0);
+      for (unsigned int f = 0 ; f < 10 ; ++f) {
+         int row = f/3;
+         int col = f%3;
+         int y = row*(sheet->H()/4);
+         int x = col*(sheet->W()/3);
+         subsheet[f] = window->CreateSubImage(sheet , x , y , sheet->W()/3 , sheet->H()/4);
+      }
+      return true;
+   }
+   return false;
+}
+
 
 
 /// ----------------      Global Animations      ------------------------
@@ -61,7 +95,22 @@ bool GlobalAnimations::LoadGlobalAnimations(EagleGraphicsContext* win) {
    window = win;
    bool success = true;
    
-   success = success && shuriken.Load  (window , "Data/Images/Shuriken/Blade"       , "png" , 3);
+   cat_walking = window->LoadImageFromFile("Data/Images/Cats/CatRun.png");
+   cat_jumping = window->LoadImageFromFile("Data/Images/Cats/CatJump.png");
+   
+   success = success && cat_walking && cat_walking->Valid();
+   success = success && cat_jumping && cat_jumping->Valid();
+   
+   success = success && catwalk.SetupSpriteSheet(win , cat_walking , "CatWalk");
+   success = success && catjump.SetupSpriteSheet(win , cat_jumping , "CatJump");
+   
+   catwalk.Init(8 , 1 , 2.0 , ANIMATION_REPEAT_FORWARDS);
+   catjump.Init(10 , 1 , 1.2 , ANIMATION_ONCE_FORWARDS);
+   
+   catmap["Walk"] = &catwalk;
+   catmap["Jump"] = &catjump;
+   
+   success = success && shuriken.Load  (window , "Data/Images/Shuriken/BladeB"       , "png" , 3);
    success = success && nstand.Load    (window , "Data/Images/Ninja/NinjaStand"     , "png" , 1);
    success = success && nknockback.Load(window , "Data/Images/Ninja/NinjaKnockback" , "png" , 1);
    success = success && ndie.Load      (window , "Data/Images/Ninja/NinjaDie"       , "png" , 10);
@@ -73,7 +122,7 @@ bool GlobalAnimations::LoadGlobalAnimations(EagleGraphicsContext* win) {
    success = success && nspin.Load     (window , "Data/Images/Ninja/NinjaSpin"      , "png" , 10);
    success = success && nrun.Load      (window , "Data/Images/Ninja/NinjaRun"       , "png" , 6);
 
-   shuriken.Init  (3  , 1 , 0.25 , ANIMATION_REPEAT_FORWARDS);
+   shuriken.Init  (3  , 1 , 0.20 , ANIMATION_REPEAT_FORWARDS);
    nstand.Init    (1  , 1 , 10.0 , ANIMATION_REPEAT_FORWARDS);
    nknockback.Init(1  , 1 , 1.0  , ANIMATION_ONCE_FORWARDS);
    ndie.Init      (10 , 1 , 1.5  , ANIMATION_ONCE_FORWARDS);
@@ -146,8 +195,17 @@ void GlobalAnimations::Free() {
 
 
 
-AnimationBase* GlobalAnimations::GetNinjaAnimation(std::string nstate) {
-   return ninjamap[nstate];
+BitmapAnimation* GlobalAnimations::GetNinjaAnimation(std::string nstate) {
+   return dynamic_cast<BitmapAnimation*>(ninjamap[nstate]);
 }
+
+
+
+SpriteSheetAnimation* GlobalAnimations::GetCatAnimation(std::string cstate) {
+   return dynamic_cast<SpriteSheetAnimation*>(catmap[cstate]);
+}
+
+
+
 
 

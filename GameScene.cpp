@@ -3,10 +3,12 @@
 
 
 #include "GameScene.hpp"
-
+#include "Randomizer.hpp"
 #include "World.hpp"
 
 #include "Eagle/InputHandler.hpp"
+
+
 
 
 
@@ -18,6 +20,7 @@ Game::Game() :
       pninja(),
       eninja(),
       cat(),
+      ramen(),
       anime(),
       rng()
 {
@@ -50,7 +53,11 @@ bool Game::Init(EagleGraphicsContext* win) {
    pganime = &anime;
    pplayer = &pninja;
    penemy = &eninja;
+   pcat = &cat;
+   pramen = &ramen;
+   prng = &rng;
 
+   success = success && ramen.Init(win);
    success = success && anime.LoadGlobalAnimations(win);
 
    world = new World();
@@ -80,24 +87,45 @@ SCENE_STATUS Game::HandleEvent(EagleEvent ev) {
 
 
 SCENE_STATUS Game::Update(double dt) {
+
+   /// Test for collisiions here, adjust velocities for friction
+
+   /// Update world
    world->Update(dt);
+
+   double pcolordist = DistanceHSL(pninja.ecol , pcurrent_room->room_bg_memory->GetPixel(pninja.phys.x , pninja.phys.y + pplayer->GetAnimationFrame()->H()/2));
+   double ecolordist = DistanceHSL(eninja.ecol , pcurrent_room->room_bg_memory->GetPixel(eninja.phys.x , eninja.phys.y + penemy->GetAnimationFrame()->H()/2));
+
+   pninja.phys.vx *= 1.0 - pcolordist;
+   pninja.phys.vy *= 1.0 - pcolordist;
    pninja.Update(dt);
+   eninja.phys.vx *= 1.0 - ecolordist;
+   eninja.phys.vy *= 1.0 - ecolordist;
    eninja.Update(dt);
+
+   double ccolordist = DistanceHSL(cat.ecol , pcurrent_room->room_bg_memory->GetPixel(cat.phys.x , pganime->GetCatAnimation("Walk")->GetFrame(0)->H()/2));
+
+   cat.phys.vx *= 1.0 - ccolordist;
+   cat.phys.vy *= 1.0 - ccolordist;
    cat.Update(dt);
+
    return SCENE_RUNNING;
 }
 
 
 
 void Game::Display(EagleGraphicsContext* win) {
+
+
+
+
    world->Display(win);
    
    pninja.Draw(win);
    eninja.Draw(win);
+   cat.Draw(win);
+   ramen.Draw(win);
    
-   
-//   win->Draw(pninja.GetAnimationFrame() , pninja.phys.x , pninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , pninja.GetEagleColor() , pninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
-//   win->Draw(eninja.GetAnimationFrame() , eninja.phys.x , eninja.phys.y , HALIGN_CENTER , VALIGN_CENTER , eninja.GetEagleColor() , eninja.faceleft?DRAW_HFLIP:DRAW_NORMAL);
    
 }
 

@@ -149,6 +149,8 @@
 		<Unit filename="Animation.hpp" />
 		<Unit filename="Cats.cpp" />
 		<Unit filename="Cats.hpp" />
+		<Unit filename="CollisionMap.cpp" />
+		<Unit filename="CollisionMap.hpp" />
 		<Unit filename="Credits.txt" />
 		<Unit filename="Data/Images/Rooms/Rooms.cfg" />
 		<Unit filename="GameScene.cpp" />
@@ -170,6 +172,10 @@
 		<Unit filename="Program.cpp" />
 		<Unit filename="Program.hpp" />
 		<Unit filename="README.md" />
+		<Unit filename="Ramen.cpp" />
+		<Unit filename="Ramen.hpp" />
+		<Unit filename="Randomizer.cpp" />
+		<Unit filename="Randomizer.hpp" />
 		<Unit filename="Rooms.cpp" />
 		<Unit filename="Rooms.hpp" />
 		<Unit filename="Scene.cpp" />

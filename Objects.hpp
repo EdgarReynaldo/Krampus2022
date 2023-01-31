@@ -5,32 +5,10 @@
 #ifndef Objects_HPP
 #define Objects_HPP
 
-
-/**! @enum CATCOLOR
-     @brief Flags for indicating which abilities a cat has
-*/
-
-enum COLOR {
-   GRAY     = 0,
-   WHITE    = 1,
-   RED      = 2,
-   ORANGE   = 4,
-   YELLOW   = 8,
-   GREEN    = 16,
-   CYAN     = 32,
-   BLUE     = 64,
-   PURPLE   = 128,
-   BLACK    = 256,
-   NUMCOLORS = 10
-};
+#include "Physics.hpp"
+#include "CollisionMap.hpp"
 
 #include "Eagle/Events.hpp"
-
-#include "Eagle/Color.hpp"
-
-EagleColor GetColorByEnum(COLOR c);
-
-#include "Physics.hpp"
 
 
 

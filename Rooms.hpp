@@ -16,6 +16,9 @@ class EagleImage;
 class Room {
 
 protected :
+   
+   friend class GameScene;
+   
    EagleGraphicsContext* win;
 
 public :
@@ -34,6 +37,9 @@ public :
    bool BuildRoom(EagleGraphicsContext* window , int world_num , int room_num);
 
    void Draw(EagleGraphicsContext* win);
+   
+   
+   
 };
 
 
