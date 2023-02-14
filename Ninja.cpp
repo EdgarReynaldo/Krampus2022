@@ -120,7 +120,12 @@ void Ninja::Draw(EagleGraphicsContext* win) {
    BitmapAnimation* anime = dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation(astate));
    int flag = faceleft?DRAW_HFLIP:DRAW_NORMAL;
    EagleColor c = GetEagleColor();
-   win->Draw(anime->GetFrame(current_animation.GetFrameNum()) , phys.x , phys.y , HALIGN_CENTER , VALIGN_CENTER , c , flag);
+   win->Draw(anime->GetFrame(current_animation.GetFrameNum()) , phys.x , phys.y , HALIGN_CENTER , VALIGN_BOTTOM , c , flag);
+}
+
+
+
+void Ninja::DrawShuriken(EagleGraphicsContext* win) {
    for (std::deque<Shuriken>::iterator it = shuriken.begin() ; it != shuriken.end() ; ++it) {
       it->Draw(win);
    }
@@ -133,7 +138,8 @@ void Ninja::LaunchShuriken() {
       if (nshuriken > 0) {--nshuriken;}
       Physics p;
       p.x = phys.x;
-      p.y = phys.y;
+      BitmapAnimation* anime = dynamic_cast<BitmapAnimation*>(pganime->GetNinjaAnimation(astate));
+      p.y = phys.y - anime->GetFrame(current_animation.GetFrameNum())->H()/2.0;
       p.vx = (phys.vx>0)?(ShurikenSpeed(color) + phys.vx):((phys.vx < 0)?(-ShurikenSpeed(color) + phys.vx):0);
       p.vy = (phys.vy>0)?(ShurikenSpeed(color) + phys.vy):((phys.vy < 0)?(ShurikenSpeed(color) + phys.vy):0);
       if (fabs(p.vx) > 0 || fabs(p.vy) > 0) {

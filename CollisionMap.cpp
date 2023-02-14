@@ -159,12 +159,11 @@ double DistanceHSL(EagleColor c1 , EagleColor c2) {
    float h2 = 0.0;
    float s2 = 0.0;
    float l2 = 0.0; 
-   al_color_rgb_to_hsl(c1.R() , c1.G() , c1.B() , &h1 , &s1 , &l1);
-   al_color_rgb_to_hsl(c2.R() , c2.G() , c2.B() , &h2 , &s2 , &l2);
+   al_color_rgb_to_hsl(c1.fR() , c1.fG() , c1.fB() , &h1 , &s1 , &l1);
+   al_color_rgb_to_hsl(c2.fR() , c2.fG() , c2.fB() , &h2 , &s2 , &l2);
    
-   double dl = l2 - l1;
+   double dl = fabs(l2 - l1);
    dl /= 2.0;
-   dl += 0.5;
    
    if (s2 < 0.1) {
       h2 = 0.0;
@@ -172,13 +171,13 @@ double DistanceHSL(EagleColor c1 , EagleColor c2) {
    if (s1 < 0.1) {
       h1 = 0.0;
    }
-   double ds = s2 - s1;
-   double dh = h2 - h1;
+   double ds = fabs(s2 - s1);
+   double dh = fabs(h2 - h1);
    
    while (dh < 0.0) {dh += 360.0;}
    dh /= 360.0;
    
-   return dh*ds*dl;
+   return (dh + ds + dl)/3.0;
 }
 
 

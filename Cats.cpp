@@ -28,7 +28,9 @@ Cat::Cat() :
       Object(Physics() , GRAY),
       faceleft(false),
       state("Walk")
-{}
+{
+   Init(8 , 1 , 0.75 , ANIMATION_REPEAT_FORWARDS);
+}
 
 
 
@@ -101,7 +103,7 @@ void Cat::Draw(EagleGraphicsContext* win) {
    
    EagleImage* frame = ssa->GetFrame(GetFrameNum());
    
-   win->Draw(frame , phys.x , phys.y , HALIGN_LEFT , VALIGN_TOP , ecol , faceleft?DRAW_HFLIP:DRAW_NORMAL);
+   win->Draw(frame , phys.x , phys.y , HALIGN_LEFT , VALIGN_BOTTOM , ecol , faceleft?DRAW_HFLIP:DRAW_NORMAL);
    
    
 }

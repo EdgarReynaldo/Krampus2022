@@ -22,7 +22,10 @@ Game::Game() :
       cat(),
       ramen(),
       anime(),
-      rng()
+      rng(),
+      pcolordist(1.0),
+      ecolordist(1.0),
+      ccolordist(1.0)
 {
    rng.Seed(0);
 }
@@ -54,6 +57,8 @@ bool Game::Init(EagleGraphicsContext* win) {
    pplayer = &pninja;
    penemy = &eninja;
    pcat = &cat;
+   cat.color = WHITE;
+   cat.ecol = GetColorByEnum(WHITE);
    pramen = &ramen;
    prng = &rng;
 
@@ -75,7 +80,16 @@ SCENE_STATUS Game::HandleEvent(EagleEvent ev) {
    if (ev.type == EAGLE_EVENT_KEY_DOWN && ev.keyboard.keycode == EAGLE_KEY_ESCAPE) {
       return SCENE_COMPLETE;
    }
-   
+   if (ev.type == EAGLE_EVENT_ANIMATION_COMPLETE) {
+      if (ev.animation.source == &(pninja.current_animation)) {
+         pninja.SetAnimationState("Stand" , 0);
+         pninja.current_animation.ResetAnimation();
+      }
+      else if (ev.animation.source == &(eninja.current_animation)) {
+         eninja.SetAnimationState("Stand" , 0);
+         eninja.current_animation.ResetAnimation();
+      }
+   }
    world->HandleEvent(ev);
    pninja.HandleEvent(ev);
    eninja.HandleEvent(ev);
@@ -92,22 +106,64 @@ SCENE_STATUS Game::Update(double dt) {
 
    /// Update world
    world->Update(dt);
+/// HEY DUMMY THESE PIXELS AREN"T ON THE BITMAP
+   double pcolordist = 1.0 - DistanceRGBA(pninja.ecol , pcurrent_room->room_bg_memory->GetPixel(pninja.phys.x , pninja.phys.y + pplayer->GetAnimationFrame()->H()/2));
+   double ecolordist = 1.0 - DistanceRGBA(eninja.ecol , pcurrent_room->room_bg_memory->GetPixel(eninja.phys.x , eninja.phys.y + penemy->GetAnimationFrame()->H()/2));
 
-   double pcolordist = DistanceHSL(pninja.ecol , pcurrent_room->room_bg_memory->GetPixel(pninja.phys.x , pninja.phys.y + pplayer->GetAnimationFrame()->H()/2));
-   double ecolordist = DistanceHSL(eninja.ecol , pcurrent_room->room_bg_memory->GetPixel(eninja.phys.x , eninja.phys.y + penemy->GetAnimationFrame()->H()/2));
+   if (pcolordist < 0.5) {
+      pninja.phys.tr = 0.0;
+      pninja.phys.ay = 10.0;
+   }
+   else {
+      pninja.phys.tr = 1.0;
+      pninja.phys.ay = 0.0;
+   }
+   pninja.phys.vx *= pninja.phys.tr;
+   pninja.phys.vy *= pninja.phys.tr;
 
-   pninja.phys.vx *= 1.0 - pcolordist;
-   pninja.phys.vy *= 1.0 - pcolordist;
-   pninja.Update(dt);
-   eninja.phys.vx *= 1.0 - ecolordist;
-   eninja.phys.vy *= 1.0 - ecolordist;
+   if (ecolordist < 0.5) {
+      eninja.phys.tr = 0.0;
+      eninja.phys.ay = 10.0;
+   }
+   else {
+      eninja.phys.tr = 1.0;
+      eninja.phys.ay = 0.0;
+   }
+   eninja.phys.vx *= eninja.phys.tr;
+   eninja.phys.vy *= eninja.phys.tr;
+   
+   for (std::deque<Shuriken>::iterator it = eninja.shuriken.begin() ; it != eninja.shuriken.end() ; ++it) {
+      STRIKE st = Collides(pninja , *it , dt);
+      if (st > GRAZE) {
+         pninja.SetAnimationState("Knockback" , 0);
+      }
+   }
+
+   for (std::deque<Shuriken>::iterator it = pninja.shuriken.begin() ; it != pninja.shuriken.end() ; ++it) {
+      STRIKE st = Collides(eninja , *it , dt);
+      if (st > GRAZE) {
+         eninja.SetAnimationState("Knockback" , 0);
+      }
+   }
    eninja.Update(dt);
+   pninja.Update(dt);
+   AdjustPhysicsForWorld(pninja.phys , pcurrent_room->area);
+   AdjustPhysicsForWorld(eninja.phys , pcurrent_room->area);
 
-   double ccolordist = DistanceHSL(cat.ecol , pcurrent_room->room_bg_memory->GetPixel(cat.phys.x , pganime->GetCatAnimation("Walk")->GetFrame(0)->H()/2));
+   double ccolordist = 1.0 - DistanceRGBA(cat.ecol , pcurrent_room->room_bg_memory->GetPixel(cat.phys.x , cat.phys.y + pganime->GetCatAnimation("Walk")->GetFrame(0)->H()/2));
 
-   cat.phys.vx *= 1.0 - ccolordist;
-   cat.phys.vy *= 1.0 - ccolordist;
+   if (ccolordist < 0.3) {
+      cat.phys.tr = 0.0;
+      cat.phys.ay = 10.0;
+   }
+   else {
+      cat.phys.tr = 1.0;
+      cat.phys.ay = 0.0;
+   }
+   cat.phys.vx *= cat.phys.tr;
+   cat.phys.vy *= cat.phys.tr;
    cat.Update(dt);
+   AdjustPhysicsForWorld(cat.phys , pcurrent_room->area);
 
    return SCENE_RUNNING;
 }
@@ -117,16 +173,22 @@ SCENE_STATUS Game::Update(double dt) {
 void Game::Display(EagleGraphicsContext* win) {
 
 
-
-
-   world->Display(win);
+   Transform t = win->GetTransformer()->CreateTransform();
+   t.Translate(-pninja.phys.x , -pninja.phys.y);
+   t.Translate(win->Width()/2.0 , win->Height()/2.0);
+   win->PushViewTransform(t);
    
+   world->Display(win);
+   win->DrawRectangle(Rectangle(-5,-5,pcurrent_room->room_bg->W() + 10 , pcurrent_room->room_bg->H() + 10) , 10.0 , EagleColor(255,255,255));
+   
+   ramen.Draw(win);
+   cat.Draw(win);
    pninja.Draw(win);
    eninja.Draw(win);
-   cat.Draw(win);
-   ramen.Draw(win);
+   pninja.DrawShuriken(win);
+   eninja.DrawShuriken(win);
    
-   
+   win->PopViewTransform();
 }
 
 

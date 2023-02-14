@@ -27,8 +27,10 @@ enum STRIKE {
 class Physics {
 public :
    double x,y;
+   double w,h;
    double vx,vy;
    double ax,ay;
+   double tr;// traction, velocity multiplier
    Circle    bcirc;/// Bounding circle
    Rectangle brect;/// Bounding rectangle
    Circle    icirc;/// Inner circle
@@ -48,7 +50,7 @@ STRIKE Overlaps(const Physics& p1 , const Physics& p2);
 
 
 
-
+void AdjustPhysicsForWorld(Physics& p , const Rectangle& constrain);
 
 
 #endif // Physics_HPP

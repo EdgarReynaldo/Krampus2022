@@ -59,13 +59,16 @@ bool SpriteSheetAnimation::SetupSpriteSheet(EagleGraphicsContext* win , EagleIma
    window = win;
    sheet = spritesheet;
    if (spritename.compare("CatWalk") == 0) {
+      /// Uneven image 130,120,120,130
+      int heights[4] = {130,120,120,130};
+      int ys[4] = {0 , 130 , 250 , 370};
       subsheet.resize(8 , 0);
       for (unsigned int f = 0 ; f < 8 ; ++f) {
          int row = f/2;
          int col = f%2;
-         int y = row*(sheet->H()/4);
+         int y = ys[row];//row*(sheet->H()/4);
          int x = col*(sheet->W()/2);
-         subsheet[f] = window->CreateSubImage(sheet , x , y , sheet->W()/2 , sheet->H()/4);
+         subsheet[f] = window->CreateSubImage(sheet , x , y , sheet->W()/2 , heights[row]);
       }
       return true;
    }
@@ -123,8 +126,8 @@ bool GlobalAnimations::LoadGlobalAnimations(EagleGraphicsContext* win) {
    success = success && nrun.Load      (window , "Data/Images/Ninja/NinjaRun"       , "png" , 6);
 
    shuriken.Init  (3  , 1 , 0.20 , ANIMATION_REPEAT_FORWARDS);
-   nstand.Init    (1  , 1 , 10.0 , ANIMATION_REPEAT_FORWARDS);
-   nknockback.Init(1  , 1 , 1.0  , ANIMATION_ONCE_FORWARDS);
+   nstand.Init    (1  , 1 , 2.0 , ANIMATION_REPEAT_FORWARDS);
+   nknockback.Init(1  , 1 , 0.5  , ANIMATION_ONCE_FORWARDS);
    ndie.Init      (10 , 1 , 1.5  , ANIMATION_ONCE_FORWARDS);
    ncrouch.Init   (1  , 1 , 10.0 , ANIMATION_REPEAT_FORWARDS);
    nstab.Init     (2  , 1 , 0.4  , ANIMATION_ONCE_FORWARDS);

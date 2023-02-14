@@ -34,6 +34,10 @@ class Game : public Scene {
 
    MTRNG rng;
    
+   double pcolordist;
+   double ecolordist;
+   double ccolordist;
+   
 public :
    
    Game();

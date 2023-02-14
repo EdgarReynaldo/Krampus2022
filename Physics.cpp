@@ -11,6 +11,8 @@
 Physics::Physics() :
       x(0.0),
       y(0.0),
+      w(0.0),
+      h(0.0),
       vx(0.0),
       vy(0.0),
       ax(0.0),
@@ -84,3 +86,16 @@ STRIKE Overlaps(const Physics& p1 , const Physics& p2) {
    /// Outside bounding circle
    return MISS;
 }
+
+
+
+void AdjustPhysicsForWorld(Physics& p , const Rectangle& constrain) {
+   const Rectangle& r = constrain;
+   if (p.x - p.w/2.0 < r.X()) {p.x = r.X() + p.w/2.0;}
+   if (p.y - p.h/2.0 < r.Y()) {p.y = r.Y() + p.h/2.0;}
+   if (p.x + p.w/2.0 > r.BRX()) {p.x = r.BRX() - p.w/2.0;}
+   if (p.y + p.h/2.0 > r.BRY()) {p.y = r.BRY() - p.h/2.0;}
+}
+
+
+

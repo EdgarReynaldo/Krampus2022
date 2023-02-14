@@ -55,7 +55,8 @@ public :
    virtual void HandleEvent(EagleEvent e);
    virtual void Update(double dt) override;
    virtual void Draw(EagleGraphicsContext* win) override;
-
+   void DrawShuriken(EagleGraphicsContext* win);
+   
    void LaunchShuriken();
    void SetAnimationState(std::string state , int frame_num = 0);
    int GetAnimationFrameNum();
