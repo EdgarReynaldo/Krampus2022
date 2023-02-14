@@ -163,6 +163,8 @@
 		<Unit filename="Krampus22.hpp" />
 		<Unit filename="LICENSE" />
 		<Unit filename="LICENSE.txt" />
+		<Unit filename="MathStuff.cpp" />
+		<Unit filename="MathStuff.hpp" />
 		<Unit filename="Ninja.cpp" />
 		<Unit filename="Ninja.hpp" />
 		<Unit filename="Objects.cpp" />
